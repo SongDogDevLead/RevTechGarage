@@ -2,16 +2,17 @@
 import './style.css'
 
 import * as THREE from 'three';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 
 // Scene and Camera
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
 const dashPosition = new THREE.Vector3(30, -5, -.25); 
-camera.position.set( 0.05, 0.9, -0.375 ); 
+// camera.position.set( 0.05, 0.9, -0.375 ); 
+camera.position.set( 0,1,0)
 
 
 // Renderer
@@ -22,9 +23,9 @@ document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-// Environment (HDR)
-const rgbeLoader = new RGBELoader();
-rgbeLoader.load('./assets/images/bg.hdr', function (texture) {
+// Environment (exr)
+const exrLoader = new EXRLoader();
+exrLoader.load('./assets/images/bg.exr', function (texture) {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.environment = texture;
   scene.background = texture;
@@ -52,7 +53,8 @@ loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
   scene.add(supra);
 
   // Adjust camera position and lookAt() 
-  camera.lookAt(dashPosition); 
+  // camera.lookAt(dashPosition); 
+  camera.lookAt(90,0,0)
   
  
 });
