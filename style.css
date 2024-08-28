@@ -1,3 +1,9 @@
+:root {
+  --blue-scanline: rgba(94, 144, 204, 0.2); /* Light blue with transparency */
+  --black-scanline: rgba(0, 0, 20, 0.9); /* Very dark blue (near black) */
+  --green-scanline: rgba(94, 204, 94, 0.2); /* Light green with transparency */
+}
+
 canvas {
   position: fixed;
   top: 0;
@@ -5,12 +11,59 @@ canvas {
 }
 
 #dash {
-  position:fixed
-  bottom: 10%; 
-  left: 10%;
-  width: 80%; 
+  position:fixed;
+  bottom: 25%; 
+  left: 20%;
+  width: 60%; 
   display: flex;
   flex-direction: column; 
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+  font-family: monospace;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--blue-scanline) 1px,
+    var(--blue-scanline) 4px,
+    var(--blue-scanline) 5px,
+    transparent 0.5%
+  ),
+  repeating-linear-gradient(
+    to left,
+    var(--black-scanline),
+    var(--black-scanline) 100%
+  ),
+  repeating-linear-gradient(
+    to bottom,
+    rgba(146, 219, 241, 0.5) 0px,
+    rgba(146, 219, 241, 0.5) 2px,
+    transparent 2px,
+    transparent 100px
+  ),
+  repeating-linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.5) 0px,
+    rgba(255, 255, 255, 0.5) 2px,
+    transparent 2px,
+    transparent 100px
+  );
+  
+}  
+ 
+
+.header{
+  margin: 10px 0;
+  padding: 5px;
+  color: white;
+  cursor: pointer;
+
+}
+
+.menu-item {
+  margin: 10px 0;
+  padding: 5px;
+  color: white;
+  cursor: pointer;
+ 
 }
