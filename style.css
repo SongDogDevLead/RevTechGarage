@@ -1,7 +1,25 @@
+@font-face {
+  font-family: '3270';
+  src: url('./assets/fonts/3270SemiCondensed-Regular.woff') format('woff'),
+       url('./assets/fonts/3270SemiCondensed-Regular.otf') format('otf'),
+       url('./assets/fonts/3270SemiCondensed-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+
 :root {
   --blue-scanline: rgba(94, 144, 204, 0.2); /* Light blue with transparency */
   --black-scanline: rgba(0, 0, 20, 0.9); /* Very dark blue (near black) */
   --green-scanline: rgba(94, 204, 94, 0.2); /* Light green with transparency */
+  font-family: '3270', monospace;
 }
 
 canvas {
@@ -20,7 +38,6 @@ canvas {
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  font-family: monospace;
   background: repeating-linear-gradient(
     to bottom,
     transparent 0%,
@@ -88,10 +105,7 @@ canvas {
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
-  gap: 15px;
+  margin: 25px;
+  
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
