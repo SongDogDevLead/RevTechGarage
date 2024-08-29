@@ -8,7 +8,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 
 export default {
   build: {
-    chunkSizeWarningLimit: 100000, // Increase this number based on your needs
+    chunkSizeWarningLimit: 10000, // Increase this number based on your needs
   },
 };
 
