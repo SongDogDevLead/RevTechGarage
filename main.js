@@ -33,8 +33,8 @@ const hideLoadingScreen = () => {
 };
 
 // Environment (exr)
-const rgbeLoader = new RGBELoader();
-rgbeLoader.load('./assets/images/bg.exr', function (texture) {
+const exrLoader = new EXRLoader();
+exrLoader.load('./assets/images/bg.exr', function (texture) {
     texture.mapping = THREE.EquirectangularReflectionMapping;
     scene.environment = texture;
     scene.background = texture;
@@ -45,7 +45,7 @@ dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5
 const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
-loader.load('./assets/images/blackSupraComp.glb', function (gltf) {
+loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
     const supra = gltf.scene;
  
   supra.traverse(function (node) {
