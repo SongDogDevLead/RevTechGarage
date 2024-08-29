@@ -19,10 +19,6 @@ const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerH
 const dashPosition = new THREE.Vector3(30, -5, -.25); 
 camera.position.set( 0.05, 0.9, -0.375 ); 
 
-const hideLoadingScreen = () => {
-  document.getElementById('loading-screen').style.display = 'none';
-};
-
 // Renderer
 const renderer = new THREE.WebGLRenderer({antialias: true,});
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -31,22 +27,26 @@ document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-// Environment (exr)
-const exrLoader = new EXRLoader();
-exrLoader.load('./assets/images/bg.exr', function (texture) {
-  texture.mapping = THREE.EquirectangularReflectionMapping;
-  scene.environment = texture;
-  scene.background = texture;
-});
+// Function to hide the loading screen
+const hideLoadingScreen = () => {
+  document.getElementById('loading-screen').style.display = 'none';
+};
 
-// Load Model
+// Environment (exr)
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load('./assets/images/bg.exr', function (texture) {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.environment = texture;
+    scene.background = texture;
+
+// Load the 3D model
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
 const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
-loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
-  const supra = gltf.scene;
+loader.load('./assets/images/blackSupraComp.glb', function (gltf) {
+    const supra = gltf.scene;
  
   supra.traverse(function (node) {
     if (node.isMesh) {
@@ -55,18 +55,26 @@ loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
     }
   });
 
-  const CACHE_NAME = 'v1'
+ 
 
   supra.position.set(0, 0, 0); 
   supra.scale.set(1, 1, 1); 
   supra.rotation.set(0, Math.PI / 2, 0);
   scene.add(supra);
 
+  hideLoadingScreen();
+
+}, undefined, function (error) {
+    console.error('An error occurred while loading the model:', error);
+    hideLoadingScreen(); // Hide the loading screen even if there's an error
+});
+
+});
+
   // Adjust camera position and lookAt() 
   camera.lookAt(dashPosition); 
   
- 
-});
+ const CACHE_NAME = 'v1'
 
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 12);
