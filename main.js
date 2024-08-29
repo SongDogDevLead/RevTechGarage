@@ -19,6 +19,9 @@ const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerH
 const dashPosition = new THREE.Vector3(30, -5, -.25); 
 camera.position.set( 0.05, 0.9, -0.375 ); 
 
+const hideLoadingScreen = () => {
+  document.getElementById('loading-screen').style.display = 'none';
+};
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({antialias: true,});
@@ -47,10 +50,12 @@ loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
  
   supra.traverse(function (node) {
     if (node.isMesh) {
-      node.castShadow = true;    // Allow objects to cast shadows
-      node.receiveShadow = true; // Allow objects to receive shadows
+      node.castShadow = true;    
+      node.receiveShadow = true; 
     }
   });
+
+  const CACHE_NAME = 'v1'
 
   supra.position.set(0, 0, 0); 
   supra.scale.set(1, 1, 1); 
@@ -74,6 +79,16 @@ scene.add(pointLight);
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 7.5)
 scene.add(ambientLight)
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, err => {
+          console.log('ServiceWorker registration failed: ', err);
+      });
+  });
+}
 
 // Helpers (Optional)
 const gridHelper = new THREE.GridHelper(200, 50);
