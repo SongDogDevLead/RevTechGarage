@@ -15,9 +15,9 @@ export default {
 
 // Scene and Camera
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
-const dashPosition = new THREE.Vector3(30, -5, -.25); 
-camera.position.set( 0.05, 0.9, -0.375 ); 
+const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+const targetPosition = new THREE.Vector3(2, 2.25, -0.35); 
+camera.position.set(-.1, 1.0, -0.35); 
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({antialias: true,});
@@ -72,7 +72,7 @@ loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
 });
 
   // Adjust camera position and lookAt() 
-  camera.lookAt(dashPosition); 
+  camera.lookAt(targetPosition); 
   
  const CACHE_NAME = 'v1'
 
