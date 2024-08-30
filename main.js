@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { gsap } from "gsap";
 
 export default {
   build: {
@@ -12,6 +13,80 @@ export default {
   },
 };
 
+//Camera settings
+const cameraPositions = {
+  home: {
+    perspective: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(30, 5, -.25), 
+    position: new THREE.Vector3(  -.5, 1.0, -0.35), 
+  },
+  dash:{
+    perspective: new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(30, -5, -.25), 
+    position: new THREE.Vector3( 0.05, 0.9, -0.375 ), 
+  },
+  laptop: {
+    perspective: new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(0, 0, 1), 
+    position: new THREE.Vector3( 0, 1, 0 ), 
+  },
+  visor: {
+    perspective: new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(2, 2.25, -0.35),
+    position: new THREE.Vector3(-.1, 1.0, -0.35), 
+  },
+  windHUD: {
+    perspective: new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(30, 5, -.25), 
+    position: new THREE.Vector3( 0.05, 1.05, -0.35), 
+  },
+  manual: {
+    perspective: new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(1, 0, 1), 
+    position: new THREE.Vector3( 0, 1, 0 ), 
+  },
+  phone: {
+    perspective: new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(1, -.2, 1), 
+    position: new THREE.Vector3(-0.25, 1, -0.35), 
+  },
+  navScreen: {
+    perspective: new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000),
+    lookAt: new THREE.Vector3(30, 1, 0), 
+    position: new THREE.Vector3( 0.03, 0.9, 0 ), 
+  },
+}
+
+//Camera animation handling
+document.addEventListener('click', handleClick);
+
+function handleClick(event) {
+  const target = event.target;
+  const targetPosition = target.dataset.target;
+
+  if (cameraPositions[targetPosition]) {
+    animateCamera(cameraPositions[targetPosition]);
+  }
+  else {   
+    console.log('No matching camera position for this element');
+  }
+}
+
+function animateCamera(config ) {
+  gsap.to(camera.position, {
+    duration: config.target.duration,
+    x: config.target.x,
+    y: config.target.y,
+    z: config.target.z,
+    onUpdate: () => camera.lookAt(config.lookAt)
+  });
+
+    gsap.to(camera, {
+      fov: config.perspective,
+      duration: config.duration,
+      onUpdate: () => camera.updateProjectionMatrix()
+    });
+}
 
 // Scene and Camera
 const scene = new THREE.Scene();
