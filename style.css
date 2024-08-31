@@ -38,33 +38,6 @@ canvas {
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0%,
-    var(--blue-scanline) 1px,
-    var(--blue-scanline) 4px,
-    var(--blue-scanline) 5px,
-    transparent 0.5%
-  ),
-  repeating-linear-gradient(
-    to left,
-    var(--black-scanline),
-    var(--black-scanline) 100%
-  ),
-  repeating-linear-gradient(
-    to bottom,
-    rgba(146, 219, 241, 0.4) 0px,
-    rgba(146, 219, 241, 0.4) 2px,
-    transparent 2px,
-    transparent 100px
-  ),
-  repeating-linear-gradient(
-    to right,
-    rgba(146, 219, 241, 0.4) 0px,
-    rgba(146, 219, 241, 0.4) 2px,
-    transparent 2px,
-    transparent 100px
-  )
 }  
  
 
