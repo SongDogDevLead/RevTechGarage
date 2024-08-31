@@ -7,58 +7,116 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { gsap } from "gsap";
 
+
+
 export default {
   build: {
     chunkSizeWarningLimit: 10000, // Increase this number based on your needs
   },
 };
 
+
+
+//cache version
+ const CACHE_NAME = 'v1'
+
 //Camera settings
 const cameraPositions = {
   home: {
-    perspective: new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000),
-    lookAt: new THREE.Vector3(30, 5, -.25), 
-    position: new THREE.Vector3(  -.5, 1.0, -0.35), 
+    perspective: 75,
+    lookAt: new THREE.Vector3(30, 5, -0.35), 
+    position: new THREE.Vector3( -0.5, 1, -0.35), 
+    duration: 3.5,
   },
   dash:{
-    perspective: new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000),
+    perspective: 30,
     lookAt: new THREE.Vector3(30, -5, -.25), 
     position: new THREE.Vector3( 0.05, 0.9, -0.375 ), 
+    duration: 3.5,
   },
   laptop: {
-    perspective: new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000),
-    lookAt: new THREE.Vector3(0, 0, 1), 
+    perspective: 35,
+    lookAt: new THREE.Vector3(0, -75, 100), 
     position: new THREE.Vector3( 0, 1, 0 ), 
+    duration: 4,
   },
   visor: {
-    perspective: new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000),
-    lookAt: new THREE.Vector3(2, 2.25, -0.35),
-    position: new THREE.Vector3(-.1, 1.0, -0.35), 
+    perspective: 65,
+    lookAt: new THREE.Vector3(20, 22.5, -3.5),
+    position: new THREE.Vector3(-0.1, 1.0, -0.35), 
+    duration: 3.25,
   },
   windHUD: {
-    perspective: new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000),
+    perspective: 65,
     lookAt: new THREE.Vector3(30, 5, -.25), 
     position: new THREE.Vector3( 0.05, 1.05, -0.35), 
+    duration: 3.25,
   },
   manual: {
-    perspective: new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000),
-    lookAt: new THREE.Vector3(1, 0, 1), 
+    perspective: 35,
+    lookAt: new THREE.Vector3(10, -10, 10), 
     position: new THREE.Vector3( 0, 1, 0 ), 
+    duration: 3.4,
   },
   phone: {
-    perspective: new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000),
-    lookAt: new THREE.Vector3(1, -.2, 1), 
-    position: new THREE.Vector3(-0.25, 1, -0.35), 
+    perspective: 65,
+    lookAt: new THREE.Vector3(10, -8, 10), 
+    position: new THREE.Vector3(-0.4, 1, -0.35), 
+    duration: 2.5,
   },
   navScreen: {
-    perspective: new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000),
-    lookAt: new THREE.Vector3(30, 1, 0), 
+    perspective: 35,
+    lookAt: new THREE.Vector3(30, -1, -1), 
     position: new THREE.Vector3( 0.03, 0.9, 0 ), 
+    duration: 3.375,
   },
+}
+
+// Scene and Camera
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set( -.5, 1.0, -0.35);
+camera.lookAt(cameraPositions.home.lookAt);
+
+
+//Intro
+window.addEventListener('load', startIntro)
+
+function startIntro(){
+  setTimeout(animateIntro, 10000);
+}
+
+function animateIntro() {
+  gsap.to(camera.position, {
+    duration: 4.5,
+    x: cameraPositions.dash.position.x,
+    y: cameraPositions.dash.position.y,
+    z: cameraPositions.dash.position.z,
+
+    onUpdate: () => camera.lookAt(cameraPositions.home.lookAt) 
+  });
+
+  gsap.to(cameraPositions.home.lookAt, {
+    duration: 4.5,
+    x: cameraPositions.dash.lookAt.x,
+    y: cameraPositions.dash.lookAt.y,
+    z: cameraPositions.dash.lookAt.z,
+   
+    onUpdate: () => camera.lookAt(cameraPositions.home.lookAt) 
+  });
+
+  gsap.to(camera, {
+      fov: cameraPositions.dash.perspective,
+      duration: 4.5,
+      onUpdate: () => camera.updateProjectionMatrix()
+    });
 }
 
 //Camera animation handling
 document.addEventListener('click', handleClick);
+const dashCopy = Object.assign({}, cameraPositions.dash);
+let camStartLook = dashCopy.lookAt;
+let camStartDuration = dashCopy.duration;
 
 function handleClick(event) {
   const target = event.target;
@@ -72,27 +130,73 @@ function handleClick(event) {
   }
 }
 
-function animateCamera(config ) {
+function animateCamera(config) {
+  goToHome(config, () => goToDest(config)); 
+}
+
+
+function goToHome(config, onComplete){
+  const currentCamTarget = camStartLook.clone();
+  const animTime = camStartDuration;
+
   gsap.to(camera.position, {
-    duration: config.target.duration,
-    x: config.target.x,
-    y: config.target.y,
-    z: config.target.z,
-    onUpdate: () => camera.lookAt(config.lookAt)
+    duration: animTime,
+    x: cameraPositions.home.position.x,
+    y: cameraPositions.home.position.y,
+    z: cameraPositions.home.position.z,
+    onComplete: onComplete,
+    onUpdate: () => camera.lookAt(currentCamTarget) 
+  });
+
+  gsap.to(currentCamTarget, {
+    duration: animTime,
+    x: cameraPositions.home.lookAt.x,
+    y: cameraPositions.home.lookAt.y,
+    z: cameraPositions.home.lookAt.z,
+    onUpdate: () => camera.lookAt(currentCamTarget)
   });
 
     gsap.to(camera, {
-      fov: config.perspective,
-      duration: config.duration,
+      fov: cameraPositions.home.perspective,
+      duration: animTime,
       onUpdate: () => camera.updateProjectionMatrix()
     });
+
+    camStartLook = cameraPositions.home.lookAt.clone();
+    
 }
 
-// Scene and Camera
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-const targetPosition = new THREE.Vector3(2, 2.25, -0.35); 
-camera.position.set(-.1, 1.0, -0.35); 
+function goToDest(config){ 
+  const currentCamTarget = camStartLook.clone();
+
+  gsap.to(camera.position, {
+  duration: config.duration,
+  x: config.position.x,
+  y: config.position.y,
+  z: config.position.z,
+ 
+  onUpdate: () => camera.lookAt(currentCamTarget) 
+});
+
+  gsap.to(currentCamTarget, {
+    duration: config.duration,
+    x: config.lookAt.x,
+    y: config.lookAt.y,
+    z: config.lookAt.z,
+   
+    onUpdate: () => camera.lookAt(currentCamTarget)
+  });
+
+  gsap.to(camera, {
+    fov: config.perspective,
+    duration: config.duration,
+    onUpdate: () => camera.updateProjectionMatrix()
+  });
+
+camStartLook = config.lookAt.clone();
+camStartDuration = config.duration;
+
+};
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({antialias: true,});
@@ -146,10 +250,7 @@ loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
 
 });
 
-  // Adjust camera position and lookAt() 
-  camera.lookAt(targetPosition); 
-  
- const CACHE_NAME = 'v1'
+ 
 
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 12);
