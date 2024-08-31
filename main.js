@@ -274,10 +274,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Helpers (Optional)
-const gridHelper = new THREE.GridHelper(200, 50);
-const lightHelper = new THREE.PointLightHelper(pointLight)
-scene.add(lightHelper, gridHelper);
+// // Helpers (Optional)
+// const gridHelper = new THREE.GridHelper(200, 50);
+// const lightHelper = new THREE.PointLightHelper(pointLight)
+// scene.add(lightHelper, gridHelper);
 
 // Resize Listener
 window.addEventListener('resize', () => {
