@@ -78,6 +78,9 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 camera.position.set( -.5, 1.0, -0.35);
 camera.lookAt(cameraPositions.home.lookAt);
 
+const globalClippingPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0.5);
+
+
 
 //Intro
 window.addEventListener('load', startIntro)
@@ -205,6 +208,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.clippingPlanes = [globalClippingPlane];
 
 // Function to hide the loading screen
 const hideLoadingScreen = () => {
@@ -273,11 +277,6 @@ if ('serviceWorker' in navigator) {
       });
   });
 }
-
-// // Helpers (Optional)
-// const gridHelper = new THREE.GridHelper(200, 50);
-// const lightHelper = new THREE.PointLightHelper(pointLight)
-// scene.add(lightHelper, gridHelper);
 
 // Resize Listener
 window.addEventListener('resize', () => {
