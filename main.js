@@ -78,7 +78,7 @@ const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.inner
 camera.position.set( -.5, 1.0, -0.35);
 camera.lookAt(cameraPositions.home.lookAt);
 
-const globalClippingPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0.5);
+const globalClippingPlane = new THREE.Plane(new THREE.Vector3(1, 0, 0), 0.75);
 
 
 
