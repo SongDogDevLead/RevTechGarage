@@ -1,4 +1,3 @@
-
 import './style.css'
 
 import * as THREE from 'three';
@@ -34,7 +33,7 @@ const cameraPositions = {
     position: new THREE.Vector3( 0.05, 0.9, -0.375 ), 
     duration: 3.5,
   },
-  laptop: {
+  tablet: {
     perspective: 35,
     lookAt: new THREE.Vector3(0, -75, 100), 
     position: new THREE.Vector3( 0, 1, 0 ), 
@@ -131,12 +130,11 @@ function handleClick(event) {
   else {   
     console.log('No matching camera position for this element');
   }
-}
 
 function animateCamera(config) {
   goToHome(config, () => goToDest(config)); 
-}
-
+};
+};
 
 function goToHome(config, onComplete){
   const currentCamTarget = camStartLook.clone();
@@ -222,40 +220,47 @@ exrLoader.load('./assets/images/bg.exr', function (texture) {
     scene.environment = texture;
     scene.background = texture;
 
-// Load the 3D model
+// Load the 3D models
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
 const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
-loader.load('./assets/images/blackSupraComp2.glb', function (gltf) {
-    const supra = gltf.scene;
- 
-  supra.traverse(function (node) {
-    if (node.isMesh) {
-      node.castShadow = true;    
-      node.receiveShadow = true; 
-    }
-  });
+const models = [
+  { path: './assets/images/blackSupraComp2.glb', 
+    position: [0, 0, 0], 
+    scale: [1, 1, 1], 
+    rotation: [0, Math.PI / 2, 0]},
+  { path: './assets/images/tabletV2Comp.glb',
+    position: [-0.25, 0, 0.375],
+    scale: [1, 1, 1],
+    rotation: [0, 0, 0]},
+]
 
- 
+models.forEach(model =>{
+  loader.load(model.path, function (gltf) {
+    const object = gltf.scene;
 
-  supra.position.set(0, 0, 0); 
-  supra.scale.set(1, 1, 1); 
-  supra.rotation.set(0, Math.PI / 2, 0);
-  scene.add(supra);
+    object.traverse(function (node) {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
 
-  hideLoadingScreen();
+    object.position.set(...model.position);
+    object.scale.set(...model.scale);
+    object.rotation.set(...model.rotation);
+    scene.add(object);
 
-}, undefined, function (error) {
+    hideLoadingScreen();
+
+  }, undefined, function (error) {
     console.error('An error occurred while loading the model:', error);
-    hideLoadingScreen(); // Hide the loading screen even if there's an error
+    hideLoadingScreen();
+  });
 });
-
 });
-
- 
-
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 12);
 pointLight.position.set( 0, 1, -0.375 ); // Position the light
