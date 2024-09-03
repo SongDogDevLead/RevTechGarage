@@ -17,7 +17,7 @@ export default {
 
 
 //cache version
- const CACHE_NAME = 'v1'
+ const CACHE_NAME = 'v3'
 
 //Camera settings
 const cameraPositions = {
@@ -71,6 +71,33 @@ const cameraPositions = {
   },
 }
 
+const secondaryModels = {
+  phone: {
+    path: './assets/images/phoneV2Comp.glb', 
+    position: [0, 0, 0], 
+    scale: [1, 1, 1], 
+    rotation: [0, 0, 0],
+    newPosition: [0, 0, 0],
+    newRotation: [0, 0, 0],
+    duration: 2.5
+  },
+  manual: {
+    path: './assets/images/manualComp.glb', 
+    position: [0, 0, 0], 
+    scale: [1, 1, 1], 
+    rotation: [0, 0, 0],
+    newPosition: [0, 0, 0],
+    newRotation: [0, 0, 0],
+    duration: 3.4,
+  },
+  tablet: {
+    newPosition: [0, 0, 0],
+    newRotation: [0, 0, 0],
+    duration: 4,
+  }
+}
+
+
 // Scene and Camera
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -122,18 +149,23 @@ let camStartDuration = dashCopy.duration;
 
 function handleClick(event) {
   const target = event.target;
-  const targetPosition = target.dataset.target;
+  const targetValues = target.dataset.target;
 
-  if (cameraPositions[targetPosition]) {
-    animateCamera(cameraPositions[targetPosition]);
+  if (cameraPositions[targetValues]) {
+    animateCamera(cameraPositions[targetValues], targetValues);
   }
   else {   
     console.log('No matching camera position for this element');
   }
 
-function animateCamera(config) {
-  goToHome(config, () => goToDest(config)); 
-};
+function animateCamera(config, targetValues) {
+  goToHome(config, () => {
+    goToDest(config); 
+
+    if (secondaryModels[targetValues]) {
+      handleSecondaryModel(targetValues);
+    }
+  });
 };
 
 function goToHome(config, onComplete){
@@ -196,6 +228,55 @@ function goToDest(config){
 
 camStartLook = config.lookAt.clone();
 camStartDuration = config.duration;
+}
+
+function handleSecondaryModel(targetValues) {
+  const modelConfig = secondaryModels[targetValues];
+  if (!modelConfig) {
+    console.error('No config found for key: ${targetValues}');
+    return;
+  }
+
+  let model = scene.getObjectByName(targetValues);
+
+  if (!model) {
+    loader.load(modelConfig.path, function (gltf) {
+      const loadedModel = gltf.scene;
+  
+        loadedModel.traverse(function (node) {
+          if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+          }
+        });
+    
+        loadedModel.position.set(modelConfig.position);
+        loadedModel.scale.set(modelConfig.scale);
+        loadedModel.rotation.set(modelConfig.rotation);
+        scene.add(loadedModel);
+
+        animateSecondaryModel(model, modelConfig);
+    });
+  }
+  else {animateSecondaryModel(model, modelConfig);
+  }
+}
+
+function animateSecondaryModel(model, modelConfig) {
+  gsap.to(model.position, {
+    duration: modelConfig.duration || 2,
+    x: modelConfig.newPosition.x,
+    y:modelConfig.newPosition.y,
+    z:modelConfig.newPosition.z,
+  });
+
+  gsap.to(model.rotation, {
+    duration: modelConfig.duration || 2,
+    x: THREE.Math.degToRad(modelConfig.newRotation[0]),
+  y: THREE.Math.degToRad(modelConfig.newRotation[1]),
+  z: THREE.Math.degToRad(modelConfig.newRotation[2]),
+  });
+}
 
 };
 
@@ -232,9 +313,10 @@ const models = [
     scale: [1, 1, 1], 
     rotation: [0, Math.PI / 2, 0]},
   { path: './assets/images/tabletV2Comp.glb',
-    position: [-0.25, 0, 0.375],
-    scale: [1, 1, 1],
-    rotation: [0, 0, 0]},
+    position: [0.05, .4, 0.375],
+    scale: [.85, .85, .85],
+    rotation: [THREE.MathUtils.degToRad(50), THREE.MathUtils.degToRad(150), THREE.MathUtils.degToRad(8)]
+  },
 ]
 
 models.forEach(model =>{
@@ -261,6 +343,9 @@ models.forEach(model =>{
   });
 });
 });
+
+
+
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 12);
 pointLight.position.set( 0, 1, -0.375 ); // Position the light
