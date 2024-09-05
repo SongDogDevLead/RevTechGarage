@@ -63,7 +63,7 @@ const cameraPositions = {
   },
   phone: {
     perspective: 35,
-    lookAt: new THREE.Vector3(6.7, 87, 25), 
+    lookAt: new THREE.Vector3(3, 90, -5), 
     position: new THREE.Vector3(-20, 98, -25), 
     duration: 2.5,
   },
@@ -77,17 +77,17 @@ const cameraPositions = {
 
 const secondaryModels = {
   phone: {
-    path: './assets/images/phoneV2Comp.glb', 
+    path: './assets/models/phoneV2Comp.glb', 
     name: 'phone', 
     duration: 2.5,
     position: new THREE.Vector3(50, 25, 0 ), 
     scale: [100, 100, 100], 
     rotation: new THREE.Vector3(0, 0, 0),
-    newPosition: new THREE.Vector3(3.35, 80, -5),
-    newRotation: new THREE.Vector3( 0, 120, 5)
+    newPosition: new THREE.Vector3(3.4, 80, -5),
+    newRotation: new THREE.Vector3( 0, 50, 0)
   },
   manual: {
-    path: './assets/images/manualComp.glb',
+    path: './assets/models/manualComp.glb',
     name: 'manual',
     duration: 3.4, 
     position: new THREE.Vector3(10, 50, 37.5), 
@@ -97,7 +97,7 @@ const secondaryModels = {
     newRotation: new THREE.Vector3(-50, 183, -5),
   },
   tablet: {
-    path: './assets/images/tabletV2Comp.glb',
+    path: './assets/models/tabletV2Comp.glb',
     name: 'tablet',
     duration: 4,
     newPosition: new THREE.Vector3(-5, 80, 25),
@@ -260,7 +260,7 @@ function handleClick(event) {
     let model = scene.getObjectByName(modelConfig.name);
 
     if (!model) {
-      loader.load(modelConfig.path + '?v=1', function (gltf) {
+      loader.load(modelConfig.path + '?v=', function (gltf) {
         const loadedModel = gltf.scene;
 
         loadedModel.name = modelConfig.name;
@@ -310,6 +310,8 @@ function handleClick(event) {
       y: THREE.MathUtils.degToRad(modelConfig.newRotation.y),
       z: THREE.MathUtils.degToRad(modelConfig.newRotation.z),
     });
+    console.log('Position:', loadedModel.position);
+    console.log('Rotation:', loadedModel.rotation);
   }
 };
 
@@ -326,13 +328,13 @@ exrLoader.load('./assets/images/bg.exr', function (texture) {
     scene.background = texture;
 
   const models = [
-    { path: './assets/images/blackSupraComp2.glb', 
+    { path: './assets/models/blackSupraComp2.glb', 
       name: 'supra',
       position: [0, 0, 0], 
       scale: [100, 100, 100], 
       rotation: [0, Math.PI / 2, 0]
     },
-    { path: './assets/images/tabletV2Comp.glb',
+    { path: './assets/models/tabletV2Comp.glb',
       name: 'tablet',
       position: [0, 40, 40 ],
       scale: [80, 80, 80],
