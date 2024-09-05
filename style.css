@@ -12,9 +12,6 @@
   100% { transform: rotate(360deg); }
 }
 
-
-
-
 :root {
   --blue-scanline: rgba(94, 144, 204, 0.2); /* Light blue with transparency */
   --black-scanline: rgba(0, 0, 20, 0.9); /* Very dark blue (near black) */
@@ -26,7 +23,6 @@ canvas {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
 }
 
 #dash {
