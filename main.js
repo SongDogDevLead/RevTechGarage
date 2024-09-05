@@ -77,7 +77,7 @@ const cameraPositions = {
 
 const secondaryModels = {
   phone: {
-    path: './assets/images/phoneV2Comp.glb', 
+    path: './assets/images/phoneCompV2.glb', 
     name: 'phone', 
     duration: 2.5,
     position: new THREE.Vector3(50, 25, 0 ), 
@@ -87,7 +87,7 @@ const secondaryModels = {
     newRotation: new THREE.Vector3( 0, 120, 5)
   },
   manual: {
-    path: './assets/images/manualComp.glb',
+    path: './assets/images/manualCompV2.glb',
     name: 'manual',
     duration: 3.4, 
     position: new THREE.Vector3(10, 50, 37.5), 
@@ -97,7 +97,7 @@ const secondaryModels = {
     newRotation: new THREE.Vector3(-50, 183, -5),
   },
   tablet: {
-    path: './assets/images/tabletV2Comp.glb',
+    path: './assets/images/tabletCompV2.glb',
     name: 'tablet',
     duration: 4,
     newPosition: new THREE.Vector3(-5, 80, 25),
