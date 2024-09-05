@@ -57,7 +57,7 @@ const cameraPositions = {
   },
   manual: {
     perspective: 50,
-    lookAt: new THREE.Vector3(-10, 80, 25), 
+    lookAt: new THREE.Vector3(-15, 80, 20), 
     position: new THREE.Vector3( -15, 90, -7), 
     duration: 3.4,
   },
@@ -80,7 +80,7 @@ const secondaryModels = {
     path: './assets/models/phoneV2Comp.glb', 
     name: 'phone', 
     duration: 2.5,
-    position: new THREE.Vector3(50, 25, 0 ), 
+    position: new THREE.Vector3(0, 0, 0 ), 
     scale: [100, 100, 100], 
     rotation: new THREE.Vector3(0, 0, 0),
     newPosition: new THREE.Vector3(3.4, 80, -5),
@@ -93,15 +93,15 @@ const secondaryModels = {
     position: new THREE.Vector3(10, 50, 37.5), 
     scale: [1, 1, 1], 
     rotation: new THREE.Vector3(0, 0, 0),
-    newPosition: new THREE.Vector3(-18, 80, 20),
+    newPosition: new THREE.Vector3(-12, 80, 20),
     newRotation: new THREE.Vector3(-50, 183, -5),
   },
   tablet: {
     path: './assets/models/tabletV2Comp.glb',
     name: 'tablet',
     duration: 4,
-    newPosition: new THREE.Vector3(-5, 80, 25),
-    newRotation: new THREE.Vector3( -50, 45, 10),
+    newPosition: new THREE.Vector3(-8, 80, 25),
+    newRotation: new THREE.Vector3( -80, 90, 0),
   }
 }
 
