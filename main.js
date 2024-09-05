@@ -21,7 +21,7 @@ const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 
 //cache version
- const CACHE_NAME = 'v6'
+ const CACHE_NAME = 'v7'
 
 //Camera settings
 const cameraPositions = {
