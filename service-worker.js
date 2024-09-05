@@ -4,7 +4,10 @@ const urlsToCache = [
     './index.html',
     './style.css',
     './assets/images/bg.exr',
-    './assets/images/blackSupraComp.glb'
+    './assets/images/blackSupraComp.glb',
+    './assets/images/tabletV2Comp.glb',
+    './assets/images/manualComp.glb',
+    './assets/images/phoneV2Comp.glb',
 ];
 
 self.addEventListener('install', event => {
