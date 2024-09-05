@@ -260,7 +260,7 @@ function handleClick(event) {
     let model = scene.getObjectByName(modelConfig.name);
 
     if (!model) {
-      loader.load(modelConfig.path, function (gltf) {
+      loader.load(modelConfig.path + '?v=1', function (gltf) {
         const loadedModel = gltf.scene;
 
         loadedModel.name = modelConfig.name;
