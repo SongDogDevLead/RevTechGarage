@@ -24,21 +24,88 @@ const CACHE_NAME = 'v6';
 
 // Camera Settings
 const cameraPositions = {
-  home: { perspective: 75, lookAt: new THREE.Vector3(20, 100, -37.5), position: new THREE.Vector3(-35, 100, -37.5), duration: 3.5 },
-  dash: { perspective: 30, lookAt: new THREE.Vector3(50, 80, -37.5), position: new THREE.Vector3(-1, 91, -37.5), duration: 3.5 },
-  tablet: { perspective: 50, lookAt: new THREE.Vector3(-15, 80, 25), position: new THREE.Vector3(-15, 90, -7), duration: 4 },
-  visor: { perspective: 65, lookAt: new THREE.Vector3(60, 140, -37.5), position: new THREE.Vector3(-5, 100, -37.5), duration: 3.25 },
-  windHUD: { perspective: 60, lookAt: new THREE.Vector3(140, 140, -37.5), position: new THREE.Vector3(5, 100, -37.5), duration: 3.25 },
-  manual: { perspective: 50, lookAt: new THREE.Vector3(-15, 80, 20), position: new THREE.Vector3(-15, 90, -7), duration: 3.4 },
-  phone: { perspective: 35, lookAt: new THREE.Vector3(3, 90, -5), position: new THREE.Vector3(-20, 98, -25), duration: 2.5 },
-  navScreen: { perspective: 35, lookAt: new THREE.Vector3(100, 80, 0), position: new THREE.Vector3(5, 90, 0), duration: 3.375 },
+  home: { 
+    perspective: 75, 
+    lookAt: new THREE.Vector3(20, 100, -37.5), 
+    position: new THREE.Vector3(-35, 100, -37.5), 
+    duration: 3.5 
+  },
+  dash: { 
+    perspective: 30, 
+    lookAt: new THREE.Vector3(50, 80, -37.5), 
+    position: new THREE.Vector3(-1, 91, -37.5), 
+    duration: 3.5 
+  },
+  tablet: { 
+    perspective: 50, 
+    lookAt: new THREE.Vector3(-15, 80, 25), 
+    position: new THREE.Vector3(-15, 90, -7), 
+    duration: 4 
+  },
+  visor: { 
+    perspective: 65, 
+    lookAt: new THREE.Vector3(60, 140, -37.5), 
+    position: new THREE.Vector3(-5, 100, -37.5), 
+    duration: 3.25 
+  },
+  windHUD: { 
+    perspective: 60, 
+    lookAt: new THREE.Vector3(140, 140, -37.5), 
+    position: new THREE.Vector3(5, 100, -37.5), 
+    duration: 3.25 
+  },
+  manual: { 
+    perspective: 50, 
+    lookAt: new THREE.Vector3(-15, 80, 20), 
+    position: new THREE.Vector3(-15, 90, -7), 
+    duration: 3.4 
+  },
+  phone: { 
+    perspective: 35, 
+    lookAt: new THREE.Vector3(3, 90, -5), 
+    position: new THREE.Vector3(-20, 98, -25), 
+    duration: 2.5 
+  },
+  navScreen: { 
+    perspective: 35, 
+    lookAt: new THREE.Vector3(100, 80, 0), 
+    position: new THREE.Vector3(5, 90, 0), 
+    duration: 3.375 
+  },
 };
 
 // Secondary Models Configuration
 const secondaryModels = {
-  phone: { path: './assets/models/phoneV2Comp.glb', name: 'phone', duration: 2.5, position: new THREE.Vector3(0, 0, 0), scale: [100, 100, 100], rotation: new THREE.Vector3(0, 0, 0), newPosition: new THREE.Vector3(3.4, 80, -5), newRotation: new THREE.Vector3(0, 50, 0) },
-  manual: { path: './assets/models/manualCompv2.glb', name: 'manual', duration: 0, position: new THREE.Vector3(-12, 80, 20), scale: [1, 1, 1], rotation: new THREE.Vector3(-50, 183, -5), newPosition: new THREE.Vector3(-12, 80, 20), newRotation: new THREE.Vector3(-50, 183, -5) },
-  tablet: { path: './assets/models/tabletV2Comp.glb', name: 'tablet', duration: 4, scale: [80, 80, 80], position: new THREE.Vector3(0, 40, 40), rotation: new THREE.Vector3(0, 0, 0), newPosition: new THREE.Vector3(-8, 80, 25), newRotation: new THREE.Vector3(-80, 90, 0) },
+  phone: { 
+    path: './assets/models/phoneV2Comp.glb', 
+    name: 'phone', 
+    duration: 2.5, 
+    scale: [100, 100, 100], 
+    position: new THREE.Vector3(0, 0, 0), 
+    rotation: new THREE.Vector3(0, 0, 0), 
+    newPosition: new THREE.Vector3(3.4, 80, -5), 
+    newRotation: new THREE.Vector3(0, 50, 0) 
+  },
+  manual: { 
+    path: './assets/models/manualCompv2.glb', 
+    name: 'manual', 
+    duration: 0, 
+    scale: [1, 1, 1], 
+    position: new THREE.Vector3(-12, 80, 20), 
+    rotation: new THREE.Vector3(-50, 183, -5), 
+    newPosition: new THREE.Vector3(-12, 80, 20), 
+    newRotation: new THREE.Vector3(-50, 183, -5) 
+  },
+  tablet: { 
+    path: './assets/models/tabletV2Comp.glb', 
+    name: 'tablet', 
+    duration: 4, 
+    scale: [80, 80, 80], 
+    position: new THREE.Vector3(0, 40, 40), 
+    rotation: new THREE.Vector3(0, 0, 0), 
+    newPosition: new THREE.Vector3(-8, 80, 25), 
+    newRotation: new THREE.Vector3(-80, 90, 0) 
+  },
 };
 
 // Renderer
@@ -75,8 +142,30 @@ let actions = {};
 
 // Model Loading and Animation Setup
 const models = [
-  { path: './assets/models/blackSupraCompv3.glb', name: 'supra', position: [0, 0, 0], scale: [100, 100, 100], rotation: [0, Math.PI / 2, 0] },
-  { path: secondaryModels.manual.path, name: secondaryModels.manual.name, position: [secondaryModels.manual.position.x, secondaryModels.manual.position.y, secondaryModels.manual.position.z], scale: [secondaryModels.manual.scale[0], secondaryModels.manual.scale[1], secondaryModels.manual.scale[2]], rotation: [THREE.MathUtils.degToRad(secondaryModels.manual.rotation.x), THREE.MathUtils.degToRad(secondaryModels.manual.rotation.y), THREE.MathUtils.degToRad(secondaryModels.manual.rotation.z)] },
+  { path: './assets/models/blackSupraCompv3.glb', 
+    name: 'supra', 
+    position: [0, 0, 0], 
+    scale: [100, 100, 100], 
+    rotation: [0, Math.PI / 2, 0] 
+  },
+  { path: secondaryModels.manual.path, 
+    name: secondaryModels.manual.name, 
+    position: [
+      secondaryModels.manual.position.x, 
+      secondaryModels.manual.position.y, 
+      secondaryModels.manual.position.z
+    ], 
+    scale: [
+      secondaryModels.manual.scale[0], 
+      secondaryModels.manual.scale[1], 
+      secondaryModels.manual.scale[2] 
+    ], 
+    rotation: [
+      THREE.MathUtils.degToRad(secondaryModels.manual.rotation.x), 
+      THREE.MathUtils.degToRad(secondaryModels.manual.rotation.y), 
+      THREE.MathUtils.degToRad(secondaryModels.manual.rotation.z)
+    ]
+  },
 ];
 
 models.forEach(model => {
@@ -114,15 +203,9 @@ function playAnimation(modelName, animationName) {
     const action = actions[modelName] && actions[modelName][animationName];
     if (action) {
       action.play();
-    } else {
+    } else 
+    {
       console.error(`Animation ${animationName} not found for model ${modelName}`);
-    }
-  }
-  
-  function stopAnimation(modelName, animationName) {
-    const action = actions[modelName] && actions[modelName][animationName];
-    if (action) {
-      action.stop();
     }
   }
   
@@ -131,6 +214,9 @@ function playAnimation(modelName, animationName) {
     if (action) {
       action.timeScale = -1;
       action.play();
+    }
+    else {
+      console.error(`Animation ${animationName} not found for model ${modelName}`);
     }
   }
   
@@ -158,10 +244,10 @@ function playAnimation(modelName, animationName) {
     });
   
     if (targetModel === 'manual') {
-      playAnimation('supra', 'OpenGlovebox');
-      playAnimation('manual', 'OpenBook');
+      playAnimation('supra', 'gloveBox');
+      playAnimation('manual', 'openBook');
     } else if (targetModel === 'visor') {
-      playAnimation('supra', 'OpenVisor');
+      playAnimation('supra', 'visor');
     }
   }
   
@@ -183,10 +269,10 @@ function playAnimation(modelName, animationName) {
     });
   
     if (targetModel === 'manual') {
-      stopAnimation('supra', 'OpenGlovebox');
-      stopAnimation('manual', 'OpenBook');
+      reverseAnimation('supra', 'gloveBox');
+      reverseAnimation('manual', 'openBook');
     } else if (targetModel === 'visor') {
-      stopAnimation('supra', 'OpenVisor');
+      reverseAnimation('supra', 'visor');
     }
   }
   
