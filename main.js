@@ -23,7 +23,7 @@ loader.setDRACOLoader(dracoLoader);
 //cache version
  const CACHE_NAME = 'v6'
 
-//Camera settings
+//Camera settingsc
 const cameraPositions = {
   home: {
     perspective: 75,
@@ -55,12 +55,6 @@ const cameraPositions = {
     position: new THREE.Vector3( 5, 100, -37.5),
     duration: 3.25,
   },
-  manual: {
-    perspective: 50,
-    lookAt: new THREE.Vector3(-15, 80, 20), 
-    position: new THREE.Vector3( -15, 90, -7), 
-    duration: 3.4,
-  },
   phone: {
     perspective: 35,
     lookAt: new THREE.Vector3(3, 90, -5), 
@@ -75,26 +69,19 @@ const cameraPositions = {
   },
 }
 
+let tempPosVar = new THREE.Vector3(50, 52.5, 45);
+
 const secondaryModels = {
   phone: {
     path: './assets/models/phoneV2Comp.glb', 
     name: 'phone', 
-    duration: 2.5,
-    position: new THREE.Vector3(0, 0, 0 ), 
+    duration: 1,
+    position: new THREE.Vector3(50, 52, 48), 
     scale: [100, 100, 100], 
     rotation: new THREE.Vector3(0, 0, 0),
     newPosition: new THREE.Vector3(3.4, 80, -5),
-    newRotation: new THREE.Vector3( 0, 50, 0)
-  },
-  manual: {
-    path: './assets/models/manualCompv2.glb',
-    name: 'manual',
-    duration: 0, 
-    position: new THREE.Vector3(-12, 80, 20), 
-    scale: [1, 1, 1], 
-    rotation: new THREE.Vector3(-50, 183, -5),
-    newPosition: new THREE.Vector3(-12, 80, 20),
-    newRotation: new THREE.Vector3(-50, 183, -5),
+    newRotation: new THREE.Vector3( 0, 50, 0),
+    delay: 0
   },
   tablet: {
     path: './assets/models/tabletV2Comp.glb',
@@ -105,6 +92,7 @@ const secondaryModels = {
     rotation: new THREE.Vector3(0, 0, 0),
     newPosition: new THREE.Vector3(-8, 80, 25),
     newRotation: new THREE.Vector3( -80, 90, 0),
+    delay: 0
   }
 }
 
@@ -203,6 +191,7 @@ models.forEach(model => {
         const action = mixers[model.name].clipAction(clip);
         actions[model.name][clip.name || `animation_${index}`] = action;
         console.log(`Loaded animation: ${clip.name || `animation_${index}`} for ${model.name}`);
+      
       });
     }
     checkSceneLoaded();
@@ -263,13 +252,11 @@ function startIntro() {
   );
 }
 
-
-
 //Camera animation handling
 document.addEventListener('click', handleClick);
 const dashCopy = Object.assign({}, cameraPositions.dash);
 let camStartDuration = dashCopy.duration;
-let targetValuesOut = dashCopy.name;
+let lastTargetValues = ''
 
 function handleClick(event) {
   const target = event.target;
@@ -283,42 +270,38 @@ function handleClick(event) {
   }
 }
 async function animateCamera(config, targetValues) {
-  await goToHome(config, targetValues);
-  await goToDest(config); 
-
-  if (secondaryModels[targetValues]) {
-    await handleSecondaryModel(targetValues);
-  }
-
-  if (targetValues === 'manual') {
-    playAnimation('supra', 'gloveBox');
-    playAnimation('manual', 'Take 001_Object_4');
-  } 
-  else if (targetValues === 'visor') {
-    playAnimation('supra', 'visor') 
-  }
+  await goToHome(config, targetValues); 
+  
+    await goToDest(config, targetValues); // Use arrow function to ensure proper timing
 }
     
 function playAnimation(modelName, animationName) {
-    const action = actions[modelName] && actions[modelName][animationName];
-    if (action) {
-      action.play();
-    } else 
-    {
-      console.error(`Animation ${animationName} not found for model ${modelName}`);
-    }
+  const action = actions[modelName] && actions[modelName][animationName];
+  if (action) {
+    action.timeScale = 1; 
+    action.reset();
+    action.play();
+    action.setLoop(THREE.LoopOnce); 
+    action.clampWhenFinished = true;
+  } else {
+    console.error(`Animation ${animationName} not found for model ${modelName}`);
   }
-  
-  function reverseAnimation(modelName, animationName) {
-    const action = actions[modelName] && actions[modelName][animationName];
-    if (action) {
-      action.timeScale = -1;
-      action.play();
-    }
-    else {
-      console.error(`Animation ${animationName} not found for model ${modelName}`);
-    }
+}
+
+function reverseAnimation(modelName, animationName) {
+  const action = actions[modelName] && actions[modelName][animationName];
+  if (action) {
+    action.timeScale = -1; 
+    action.play();
+    action.setLoop(THREE.LoopOnce);  // Play only once
+    action.clampWhenFinished = true;
+    action.paused = false;
+  } 
+  else {
+    console.error(`Animation ${animationName} not found for model ${modelName}`);
   }
+}
+
   
   function goToHome(config, targetValuesIn) {
     const animTime = camStartDuration;
@@ -350,58 +333,56 @@ function playAnimation(modelName, animationName) {
       if (scene.getObjectByName('phone')) {
         reverseSecondaryModel('phone');
       }
-      if (scene.getObjectByName('manual')) {
-        reverseSecondaryModel('manual');
-      }
       if (scene.getObjectByName('tablet')) {
         reverseSecondaryModel('tablet');
       }
-  
-      if (targetValuesIn === 'manual') {
-        reverseAnimation('supra', 'gloveBox');
-        reverseAnimation('manual', 'Take 001_Object_4');
-      } else if (targetValuesIn === 'visor') {
-        reverseAnimation('supra', 'visor');
+      if (lastTargetValues === 'visor') {
+      reverseAnimation('supra', 'visor');
       }
+      else {
+        console.log(`nope its this: ${lastTargetValues}`)
+      }
+  });
+} 
+function goToDest(config, targetValues) {
+  return new Promise((resolve) => {
+    gsap.to(camera.position, {
+      duration: config.duration,
+      x: config.position.x,
+      y: config.position.y,
+      z: config.position.z,
+      onComplete: resolve,  
+      onUpdate: () => controls.update(),  
     });
-  }
-  
-  function goToDest(config) {
-    return new Promise((resolve) => {
-      gsap.to(camera.position, {
-        duration: config.duration,
-        x: config.position.x,
-        y: config.position.y,
-        z: config.position.z,
-        onComplete: resolve,  
-        onUpdate: () => controls.update(),  
-      });
-  
-      gsap.to(controls.target, {
-        duration: config.duration,
-        x: config.lookAt.x,
-        y: config.lookAt.y,
-        z: config.lookAt.z,
-        onUpdate: () => controls.update(),  
-      });
-  
-      gsap.to(camera, {
-        fov: config.perspective,
-        duration: config.duration,
-        onUpdate: () => camera.updateProjectionMatrix(),
-      });
-  
-      if (targetValuesOut === 'manual') {
-        playAnimation('supra', 'gloveBox');
-        playAnimation('manual', 'openBook');
-      } else if (targetValuesOut === 'visor') {
+
+    gsap.to(controls.target, {
+      duration: config.duration,
+      x: config.lookAt.x,
+      y: config.lookAt.y,
+      z: config.lookAt.z,
+      onUpdate: () => controls.update(),  
+    });
+
+    gsap.to(camera, {
+      fov: config.perspective,
+      duration: config.duration,
+      onUpdate: () => camera.updateProjectionMatrix(),
+    });
+
+    
+    if (secondaryModels[targetValues]) {
+      handleSecondaryModel(targetValues);
+    }
+    else if (targetValues === 'visor') {
+      gsap.delayedCall(0.5, () => {
         playAnimation('supra', 'visor');
-      }
-  
-      camStartDuration = config.duration;
-      targetValuesOut = config.name;
-    });
+    })
   }
+   lastTargetValues = targetValues
+    console.log(`and lastTargetValues gives ${lastTargetValues}`)
+  });
+}
+  
   
 
 function handleSecondaryModel(targetValues) {
@@ -420,29 +401,11 @@ function handleSecondaryModel(targetValues) {
     return Promise.resolve();
   } 
   else {
-    
     return new Promise((resolve, reject) => {
       loader.load(modelConfig.path + '?v=' + Date.now(), function (gltf) {
         const loadedModel = gltf.scene;
         loadedModel.name = modelConfig.name;
 
-        const bone = loadedModel.getObjectByName('coverBone'); 
-        const logo = loadedModel.getObjectByName('Curve001'); 
-
-        
-        if (bone && logo) {
-          logo.position.set(5, 2.5, -3);
-          logo.rotation.set(
-            THREE.MathUtils.degToRad(-90),
-            THREE.MathUtils.degToRad(0),
-            THREE.MathUtils.degToRad(0)
-          );
-          bone.add(logo);
-        } else {
-          console.warn('Bone or Logo not found.');
-        }
-
-        
         loadedModel.traverse(function (node) {
           if (node.isMesh) {
             node.castShadow = true;
@@ -460,6 +423,7 @@ function handleSecondaryModel(targetValues) {
           modelConfig.rotation.y, 
           modelConfig.rotation.z
         );
+        loadedModel.quaternion.setFromEuler(loadedModel.rotation);
         loadedModel.scale.set(
           modelConfig.scale[0], 
           modelConfig.scale[1], 
@@ -467,8 +431,8 @@ function handleSecondaryModel(targetValues) {
         );
 
         
+        
         scene.add(loadedModel);
-
         
         if (gltf.animations && gltf.animations.length) {
           mixers[loadedModel.name] = new THREE.AnimationMixer(loadedModel);
@@ -480,11 +444,9 @@ function handleSecondaryModel(targetValues) {
             console.log(`Loaded animation: ${clip.name || `animation_${index}`} for ${loadedModel.name}`);
           });
         }
-
         
         animateSecondaryModel(loadedModel, modelConfig);
 
-        
         resolve();
       }, undefined, (error) => {
         console.error(`Error loading model: ${error}`);
@@ -497,6 +459,7 @@ function handleSecondaryModel(targetValues) {
 function animateSecondaryModel(loadedModel, modelConfig) {  
     
   gsap.to(loadedModel.position, {
+    delay: modelConfig.delay || 0,
     duration: modelConfig.duration || 0,
     x: modelConfig.newPosition.x,
     y: modelConfig.newPosition.y,
@@ -505,6 +468,7 @@ function animateSecondaryModel(loadedModel, modelConfig) {
  
   gsap.to(loadedModel.rotation, {
     duration: modelConfig.duration || 0,
+    delay: modelConfig.delay || 0,
     x: THREE.MathUtils.degToRad(modelConfig.newRotation.x),
     y: THREE.MathUtils.degToRad(modelConfig.newRotation.y),
     z: THREE.MathUtils.degToRad(modelConfig.newRotation.z),
@@ -516,14 +480,6 @@ function animateSecondaryModel(loadedModel, modelConfig) {
 function reverseSecondaryModel(targetValues) {
   const modelConfig = secondaryModels[targetValues];
   const model = scene.getObjectByName(modelConfig.name);
-
-  if (model.name === 'manual') {
-    reverseAnimation('supra', 'gloveBox');
-    reverseAnimation('manual', 'openBook');
-  } 
-  else if (model.name === 'visor') {
-  reverseAnimation('supra', 'visor');
-  }
 
   if (model) {
   
@@ -546,7 +502,7 @@ function reverseSecondaryModel(targetValues) {
       z: THREE.MathUtils.degToRad(modelConfig.rotation.z),
     });
   }
-}
+};
 
   // Environment (exr)
 const exrLoader = new EXRLoader();
@@ -582,13 +538,24 @@ window.addEventListener('resize', () => {
 });
 
 // Animate and Render Loop
+const clock = new THREE.Clock();
+
 function animate() {
   requestAnimationFrame(animate);
+
+  const delta = clock.getDelta(); 
+
+  
+  for (const key in mixers) {
+    if (mixers.hasOwnProperty(key)) {
+      mixers[key].update(delta); 
+    }
+  }
+
   renderer.render(scene, camera);
 }
 
 animate();
-
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/service-worker.js').then(registration => {
